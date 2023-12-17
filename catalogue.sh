@@ -1,4 +1,4 @@
-echo -e "\e[36m>>>>>>>>> Configuring NodeJs repos <<<<<<<<<<<\e[0m"
+echo -e "\e[36m>>>>>>>>> Disable Nodejs <<<<<<<<<<<\e[0m"
 dnf module disable nodejs -y
 dnf module enable nodejs:18 -y
 

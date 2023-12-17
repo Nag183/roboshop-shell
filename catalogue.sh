@@ -23,7 +23,7 @@ echo -e "\e[36m>>>>>>>>> Install NodeJs Dependencies <<<<<<<<<<<\e[0m"
 npm install
 
 echo -e "\e[36m>>>>>>>>> Copy Catalogue Systemd file <<<<<<<<<<<\e[0m"
-cp catalogue.service /etc/systemd/system/catalogue.service
+cp /home/centos/roboshop-shell/catalogue.service /etc/systemd/system/catalogue.service
 
 echo -e "\e[36m>>>>>>>>> Start Catalogue Service <<<<<<<<<<<\e[0m"
 systemctl daemon-reload

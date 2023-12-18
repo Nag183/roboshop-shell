@@ -2,15 +2,19 @@ script=$(realpath "$0")
 script_path=$(dirname "$script")
 source ${script_path}/common.sh
 
-echo -e "\e[36m>>>>>>>>> Install Redis <<<<<<<<<<<\e[0m"
-cp /home/centos/roboshop-shell/mongo.repo /etc/yum.repos.d/mongo.repo
+func_print_head "Setup MongoDB Repo"
+cp /home/centos/roboshop-shell/mongo.repo /etc/yum.repos.d/mongo.repo &>>$log_file
+func_stat_check $?
 
-echo -e "\e[36m>>>>>>>>> Install Mongodb <<<<<<<<<<<\e[0m"
-yum install mongodb-org -y
+func_print_head "Install MongoDBo"
+yum install mongodb-org -y &>>$log_file
+func_stat_check $?
 
-echo -e "\e[36m>>>>>>>>> Update Mongod Listen Address <<<<<<<<<<<\e[0m"
-sed -i -e 's|127.0.0.1|0.0.0.0' /etc/mongod.conf
+func_print_head "Update MongoDB Listen Address"
+sed -i -e 's|127.0.0.1|0.0.0.0' /etc/mongod.conf &>>$log_file
+func_stat_check $?
 
-echo -e "\e[36m>>>>>>>>> Start Mongod Service <<<<<<<<<<<\e[0m"
-systemctl enable mongod
-systemctl start mongod
+func_print_head "Start MongoDB"
+systemctl enable mongod &>>$log_file
+systemctl restart mongod &>>$log_file
+func_stat_check $?

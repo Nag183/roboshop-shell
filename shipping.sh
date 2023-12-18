@@ -1,8 +1,10 @@
+source coommon.sh
+
 echo -e "\e[36m>>>>>>>>> Install Maven <<<<<<<<<<<\e[0m"
 dnf install maven -y
 
 echo -e "\e[36m>>>>>>>>> Create App User <<<<<<<<<<<\e[0m"
-useradd roboshop
+useradd ${app_user}
 
 echo -e "\e[36m>>>>>>>>> Create App Directory <<<<<<<<<<<\e[0m"
 rm-rf /app

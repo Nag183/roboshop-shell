@@ -1,3 +1,5 @@
+source coommon.sh
+
 echo -e "\e[36m>>>>>>>>> Disable Nodejs  <<<<<<<<<<<\e[0m"
 dnf module disable nodejs -y
 dnf module enable nodejs:18 -y
@@ -6,7 +8,7 @@ echo -e "\e[36m>>>>>>>>> Install NodeJs <<<<<<<<<<<\e[0m"
 dnf install nodejs -y
 
 echo -e "\e[36m>>>>>>>>> Add Application user <<<<<<<<<<<\e[0m"
-useradd roboshop
+useradd ${app_user}
 
 echo -e "\e[36m>>>>>>>>> Create Application Directory <<<<<<<<<<<\e[0m"
 mkdir /app

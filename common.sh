@@ -2,54 +2,83 @@ app_user=roboshop
 script=$(realpath "$0")
 script_path=$(dirname "$script")
 
-print_head() {
+func_print_head() {
   echo -e "\e[36m>>>>>>>>> $* <<<<<<<<<<<\e[0m"
 }
 
-schema_setup() {
+func_schema_setup() {
   if [ "$schema_setup" == "mongo" ]; then
-    print_head "Copy Mongo repo"
+    func_print_head "Copy Mongo repo"
     cp ${script_path}/mongo.repo /etc/yum.repos.d/mongo.repo
 
-    print_head "Install MongoDB Client"
+    func_print_head "Install MongoDB Client"
     dnf install mongodb-org-shell -y
 
-    print_head "Load Schema "
+    func_print_head "Load Schema "
     mongo --host MONGODB-SERVER-IPADDRESS </app/schema/${component}.js
+  fi
+  if [ "${schema_setup}" == "mysql" ]; then
+    func_print_head "Install Mysql"
+    dnf install mysql -y
+
+    func_print_head "Install Mysql"
+    mysql -h <MYSQL-SERVER-IPADDRESS> -uroot -p${mysql_root_password} < /app/schema/${component}.sql
   fi
 }
 
-func_nodejs() {
-  print_head "Disable Nodejs"
-  dnf module disable nodejs -y
-  dnf module enable nodejs:18 -y
-
-  print_head "Install NodeJs "
-  dnf install nodejs -y
-
-  print_head "Add Application cart"
+func_app_prereq() {
+  func_print_head "Add Application User"
   useradd ${app_user}
 
-  print_head "Create Application Directory"
+  func_print_head "Create Application Directory"
+  rm-rf /app
   mkdir /app
 
-  print_head "Download App Content"
+  func_print_head "Download Application Content"
   curl -o /tmp/${component}.zip https://roboshop-artifacts.s3.amazonaws.com/${component}.zip
+
+  func_print_head "Extract Application Content"
   cd /app
-
-  print_head "Unzip App Content"
   unzip /tmp/${component}.zip
+}
 
-  print_head "Install NodeJs Dependencies"
-  npm install
-
-  print_head "Copy cart Systemd file"
+func_systemd_setup() {
+  func_print_head "Copy User Systemd file"
   cp $script_path/${component}.service /etc/systemd/system/${component}.service
 
-  print_head "Start cart Service"
+  func_print_head "Start Shipping Service"
   systemctl daemon-reload
   systemctl enable ${component}
   systemctl restart ${component}
+}
 
-  schema_setup
+func_nodejs() {
+  func_print_head "Disable Nodejs"
+  dnf module disable nodejs -y
+  dnf module enable nodejs:18 -y
+
+  func_print_head "Install NodeJs "
+  dnf install nodejs -y
+
+  func_app_prereq
+
+  func_print_head "Install NodeJs Dependencies"
+  npm install
+
+  func_schema_setup
+  func_systemd_setup
+}
+
+func_java() {
+  func_print_head "Install Maven"
+  dnf install maven -y
+
+  func_app_prereq
+
+   func_print_head "Download Maven Dependencies"
+   mvn clean package
+   mv target/${component}-1.0.jar ${component}.jar
+
+  func_schema_setup
+  func_systemd_setup
 }

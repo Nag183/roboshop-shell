@@ -115,6 +115,7 @@ func_java() {
   func_systemd_setup
 }
 
+
 func_python() {
   func_print_head "Install Python"
   yum install python36 gcc python3-devel -y &>>$log_file

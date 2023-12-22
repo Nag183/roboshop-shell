@@ -10,3 +10,4 @@ fi
 
 component=payment
 func_python
+

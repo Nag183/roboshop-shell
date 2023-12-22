@@ -8,14 +8,14 @@ yum install nginx -y &>>$log_file
 func_stat_check $?
 
 func_print_head "Copy roboshop Config file"
-cp roboshop.conf /etc/ngnix/default.d/roboshop.conf &>>$log_file
+cp roboshop.conf /etc/nginx/default.d/roboshop.conf &>>$log_file
 func_stat_check $?
 
-func_print_head "Clean Old App conten"
+func_print_head "Clean Old App content"
 rm -rf /usr/share/nginx/html/* &>>$log_file
 func_stat_check $?
 
-func_print_head "Download App Contentl"
+func_print_head "Download App Content"
 curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend.zip &>>$log_file
 func_stat_check $?
 
